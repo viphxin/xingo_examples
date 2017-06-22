@@ -1,0 +1,18 @@
+syntax="proto3";
+package pb;
+option csharp_namespace="Pb";
+
+//msg=1
+message HelloReq{
+    string name         = 1;
+}
+
+//msg=2
+message HelloAck{
+    string content      = 1;
+}
+
+//msg=3
+message DelayNtf{
+    string ts          = 1;
+}
