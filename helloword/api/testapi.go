@@ -11,9 +11,11 @@ import (
 	"time"
 )
 
-type TestRouter struct{}
+type TestRouter struct{
+	fnet.BaseRouter
+}
 
-func sendDelayMsg(fconn iface.Iconnection){
+func (this *TestRouter)sendDelayMsg(fconn iface.Iconnection){
 	utils.GlobalObject.GetSafeTimer().CreateTimer(5000, func(args ...interface{}){
 		con := args[0].(iface.Iconnection)
 		ntf := &pb.DelayNtf{
@@ -29,22 +31,22 @@ func sendDelayMsg(fconn iface.Iconnection){
 /*
 HelloReq
 */
-func (this *TestRouter)HelloReq_1(request *fnet.PkgAll){
+func (this *TestRouter)Handle(request iface.IRequest){
 	msg := &pb.HelloReq{}
-	err := proto.Unmarshal(request.Pdata.Data, msg)
+	err := proto.Unmarshal(request.GetData(), msg)
 	if err == nil {
-		request.Fconn.SetProperty("name", msg.Name)
+		request.GetConnection().SetProperty("name", msg.Name)
 		//send ack
 		ack := &pb.HelloAck{
 			Content: fmt.Sprintf("Hello %s.You will receive a Ntf after 5 seconds.\n", msg.Name),
 		}
 		data, err := utils.GlobalObject.Protoc.GetDataPack().Pack(2, ack)
 		if err == nil{
-			request.Fconn.Send(data)
-			sendDelayMsg(request.Fconn)
+			request.GetConnection().Send(data)
+			this.sendDelayMsg(request.GetConnection())
 		}
 	} else {
 		logger.Error(err)
-		request.Fconn.LostConnection()
+		request.GetConnection().LostConnection()
 	}
 }

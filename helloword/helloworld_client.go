@@ -148,9 +148,6 @@ func (this *HelloWorldCPtotoc)StartReadThread(fconn iface.Iclient){
 	}()
 }
 
-func (this *HelloWorldCPtotoc)AddRpcRouter(interface{}){
-
-}
 func (this *HelloWorldCPtotoc)GetMsgHandle() iface.Imsghandle{
 	return nil
 }

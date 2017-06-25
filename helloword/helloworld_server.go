@@ -22,7 +22,7 @@ func main() {
 
 	//add api ---------------start
 	TestRouterObj := &api.TestRouter{}
-	s.AddRouter(TestRouterObj)
+	s.AddRouter("1", TestRouterObj)
 	//add api ---------------end
 
 	//regest callback
