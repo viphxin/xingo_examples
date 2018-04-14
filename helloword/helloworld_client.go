@@ -1,25 +1,25 @@
 package main
 
 import (
-	"io"
-	"github.com/viphxin/xingo/fnet"
-	"time"
-	"os"
-	"os/signal"
-	"fmt"
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"github.com/golang/protobuf/proto"
-	"xingo_examples/helloword/pb"
+	"github.com/viphxin/xingo/fnet"
 	"github.com/viphxin/xingo/iface"
 	"github.com/viphxin/xingo/logger"
+	"github.com/viphxin/xingo_examples/helloword/pb"
+	"io"
+	"os"
+	"os/signal"
+	"time"
 )
 
-type HelloWorldCPtotoc struct{
+type HelloWorldCPtotoc struct {
 	Name string
 }
 
-func (this *HelloWorldCPtotoc)OnConnectionMade(fconn iface.Iclient){
+func (this *HelloWorldCPtotoc) OnConnectionMade(fconn iface.Iclient) {
 	fmt.Println("链接建立")
 	req := &pb.HelloReq{
 		Name: this.Name,
@@ -27,7 +27,7 @@ func (this *HelloWorldCPtotoc)OnConnectionMade(fconn iface.Iclient){
 	this.Send(fconn, 1, req)
 }
 
-func (this *HelloWorldCPtotoc)OnConnectionLost(fconn iface.Iclient){
+func (this *HelloWorldCPtotoc) OnConnectionLost(fconn iface.Iclient) {
 	fmt.Println("链接丢失")
 }
 
@@ -84,7 +84,7 @@ func (this *HelloWorldCPtotoc) Pack(msgId uint32, data proto.Message) (out []byt
 
 }
 
-func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
+func (this *HelloWorldCPtotoc) DoMsg(fconn iface.Iclient, pdata *fnet.PkgData) {
 	//处理消息
 	fmt.Println(fmt.Sprintf("msg id :%d, data len: %d", pdata.MsgId, pdata.Len))
 	switch pdata.MsgId {
@@ -93,7 +93,7 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 		err := proto.Unmarshal(pdata.Data, ack)
 		if err == nil {
 			logger.Debug(ack.Content)
-		}else{
+		} else {
 			logger.Error("Unmarshal ack err: ", err)
 		}
 	case 3:
@@ -101,7 +101,7 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 		err := proto.Unmarshal(pdata.Data, nft)
 		if err == nil {
 			logger.Debug(nft.Ts)
-		}else{
+		} else {
 			logger.Error("Unmarshal ntf err: ", err)
 		}
 	default:
@@ -109,17 +109,17 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 	}
 }
 
-func (this *HelloWorldCPtotoc)Send(fconn iface.Iclient, msgID uint32, data proto.Message){
+func (this *HelloWorldCPtotoc) Send(fconn iface.Iclient, msgID uint32, data proto.Message) {
 	dd, err := this.Pack(msgID, data)
-	if err == nil{
+	if err == nil {
 		fconn.Send(dd)
-	}else{
+	} else {
 		fmt.Println(err)
 	}
 
 }
 
-func (this *HelloWorldCPtotoc)StartReadThread(fconn iface.Iclient){
+func (this *HelloWorldCPtotoc) StartReadThread(fconn iface.Iclient) {
 	go func() {
 		for {
 			//read per head data
@@ -148,20 +148,20 @@ func (this *HelloWorldCPtotoc)StartReadThread(fconn iface.Iclient){
 	}()
 }
 
-func (this *HelloWorldCPtotoc)GetMsgHandle() iface.Imsghandle{
+func (this *HelloWorldCPtotoc) GetMsgHandle() iface.Imsghandle {
 	return nil
 }
-func (this *HelloWorldCPtotoc)GetDataPack() iface.Idatapack{
+func (this *HelloWorldCPtotoc) GetDataPack() iface.Idatapack {
 	return nil
 }
 
-func (this *HelloWorldCPtotoc)InitWorker(int32){}
+func (this *HelloWorldCPtotoc) InitWorker(int32) {}
 
 func main() {
-	for i := 0; i< 100; i ++{
+	for i := 0; i < 100; i++ {
 		client := fnet.NewTcpClient("0.0.0.0", 8999, &HelloWorldCPtotoc{fmt.Sprintf("xingo_fans_%d", i)})
 		client.Start()
-		time.Sleep(1*time.Second)
+		time.Sleep(1 * time.Second)
 	}
 
 	// close

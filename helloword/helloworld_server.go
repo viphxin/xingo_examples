@@ -1,12 +1,12 @@
 package main
 
 import (
+	"fmt"
+	"github.com/viphxin/xingo"
 	"github.com/viphxin/xingo/iface"
 	"github.com/viphxin/xingo/logger"
-	"github.com/viphxin/xingo"
 	"github.com/viphxin/xingo/utils"
-	"xingo_examples/helloword/api"
-	"fmt"
+	"github.com/viphxin/xingo_examples/helloword/api"
 )
 
 func DoConnectionMade(fconn iface.Iconnection) {
