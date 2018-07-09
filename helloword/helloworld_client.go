@@ -3,7 +3,7 @@ package main
 import (
 	"io"
 	"github.com/viphxin/xingo/fnet"
-	"time"
+	//"time"
 	"os"
 	"os/signal"
 	"fmt"
@@ -101,6 +101,9 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 		err := proto.Unmarshal(pdata.Data, nft)
 		if err == nil {
 			logger.Debug(nft.Ts)
+                        this.Send(fconn, 1, &pb.HelloReq{
+                Name: this.Name,
+        })
 		}else{
 			logger.Error("Unmarshal ntf err: ", err)
 		}
@@ -158,10 +161,14 @@ func (this *HelloWorldCPtotoc)GetDataPack() iface.Idatapack{
 func (this *HelloWorldCPtotoc)InitWorker(int32){}
 
 func main() {
-	for i := 0; i< 100; i ++{
-		client := fnet.NewTcpClient("0.0.0.0", 8999, &HelloWorldCPtotoc{fmt.Sprintf("xingo_fans_%d", i)})
-		client.Start()
-		time.Sleep(1*time.Second)
+	for i := 0; i< 10000; i ++{
+		client, err := fnet.NewTcpClient("0.0.0.0", 8999, &HelloWorldCPtotoc{fmt.Sprintf("xingo_fans_%d", i)})
+		if err != nil {
+                   logger.Error(err)
+                   break
+                }
+                client.Start()
+		//time.Sleep(1*time.Second)
 	}
 
 	// close
