@@ -16,7 +16,8 @@ type TestRouter struct{
 }
 
 func (this *TestRouter)sendDelayMsg(fconn iface.Iconnection){
-	utils.GlobalObject.GetSafeTimer().CreateTimer(5000, func(args ...interface{}){
+        logger.Debug("sendDelayMsg ...!!!")
+	_, errCreateTimer := utils.GlobalObject.GetSafeTimer().CreateTimer(5000, func(args ...interface{}){
 		con := args[0].(iface.Iconnection)
 		ntf := &pb.DelayNtf{
 			Ts: time.Now().String(),
@@ -24,8 +25,15 @@ func (this *TestRouter)sendDelayMsg(fconn iface.Iconnection){
 		ntfRaw, err := utils.GlobalObject.Protoc.GetDataPack().Pack(3, ntf)
 		if err == nil {
 			con.Send(ntfRaw)
-		}
+		}else{
+                        logger.Error(err)			
+               }
 	},[]interface{}{fconn})
+        if errCreateTimer != nil {
+             logger.Error(errCreateTimer)
+       }
+      logger.Debug("Total: ",utils.GlobalObject.GetSafeTimer().TotalCnt())
+      logger.Debug("sendDelayMsg ...22222222222!!!")
 }
 
 /*

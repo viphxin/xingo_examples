@@ -6,6 +6,7 @@ import (
 	"github.com/viphxin/xingo"
 	"github.com/viphxin/xingo/utils"
 	"xingo_examples/helloword/api"
+	"xingo_examples/helloword/cmd"
 	"fmt"
 )
 
@@ -24,6 +25,10 @@ func main() {
 	TestRouterObj := &api.TestRouter{}
 	s.AddRouter("1", TestRouterObj)
 	//add api ---------------end
+
+       //add cmd ----------------start
+       utils.GlobalObject.CmdInterpreter.AddCommand(cmd.NewTimerCommand())
+       //add cmd ----------------end
 
 	//regest callback
 	utils.GlobalObject.OnConnectioned = DoConnectionMade

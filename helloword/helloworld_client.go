@@ -92,7 +92,7 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 		ack := &pb.HelloAck{}
 		err := proto.Unmarshal(pdata.Data, ack)
 		if err == nil {
-			logger.Debug(ack.Content)
+			logger.Info(ack.Content)
 		}else{
 			logger.Error("Unmarshal ack err: ", err)
 		}
@@ -100,7 +100,7 @@ func (this *HelloWorldCPtotoc)DoMsg(fconn iface.Iclient, pdata *fnet.PkgData){
 		nft := &pb.DelayNtf{}
 		err := proto.Unmarshal(pdata.Data, nft)
 		if err == nil {
-			logger.Debug(nft.Ts)
+			logger.Info(nft.Ts)
                         this.Send(fconn, 1, &pb.HelloReq{
                 Name: this.Name,
         })
@@ -161,7 +161,7 @@ func (this *HelloWorldCPtotoc)GetDataPack() iface.Idatapack{
 func (this *HelloWorldCPtotoc)InitWorker(int32){}
 
 func main() {
-	for i := 0; i< 10000; i ++{
+	for i := 10000; i< 10001; i ++{
 		client, err := fnet.NewTcpClient("0.0.0.0", 8999, &HelloWorldCPtotoc{fmt.Sprintf("xingo_fans_%d", i)})
 		if err != nil {
                    logger.Error(err)
